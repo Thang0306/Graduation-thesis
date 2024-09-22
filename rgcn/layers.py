@@ -92,6 +92,7 @@ class RGCNLayer(nn.Module):
 
 
 class RGCNBasisLayer(RGCNLayer):
+    # Initialize the layer. 
     def __init__(self, in_feat, out_feat, num_rels, num_bases=-1, bias=None,
                  activation=None, is_input_layer=False):
         super(RGCNBasisLayer, self).__init__(in_feat, out_feat, bias, activation)
@@ -115,6 +116,7 @@ class RGCNBasisLayer(RGCNLayer):
             nn.init.xavier_uniform_(self.w_comp,
                                     gain=nn.init.calculate_gain('relu'))
 
+    # propagate message
     def propagate(self, g):
         if self.num_bases < self.num_rels:
             # generate all weights from bases
