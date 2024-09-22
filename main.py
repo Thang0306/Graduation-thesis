@@ -145,7 +145,7 @@ if __name__ == '__main__':
         val_dataset = DataLoader(dataset=val_set, batch_size=1, collate_fn=co.collate_rel, shuffle=False, pin_memory=True, num_workers=4)
         test_dataset = DataLoader(dataset=test_set, batch_size=1, collate_fn=co.collate_rel, shuffle=False, pin_memory=True, num_workers=4)
 
-    for epoch in range(args['n_epochs']):
+    for epoch in range(args['n_epochs']): # heheheeh
         print('Epoch {}'.format(epoch), '_', 'Start training: ', datetime.datetime.now(),
               '=============================================')
         model.train()
