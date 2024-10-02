@@ -92,9 +92,12 @@ class HGLS(nn.Module):
         self.rdecoder = ConvTransR(num_rels, h_dim, short_con['input_dropout'], short_con['hidden_dropout'], short_con['feat_dropout'])
 
     def forward(self, total_list, data_list, node_id_new=None, time_gap=None, device=None, mode='test'):
+        pre_emb = None
+        r_emb = None
+
         # RE-GCN的更新
         t = data_list['t'][0].to(device)
-        all_triples = data_list['triple'].to(device)
+        all_triples = data_list['triple'].to(device).long()
         #output = total_list[t]
         if self.short:
             if t - self.sequence_len < 0:
@@ -133,11 +136,17 @@ class HGLS(nn.Module):
             pre_emb = new_embedding
             r_emb = new_r_embedding
 
+        
+        if pre_emb is None:
+            pre_emb = self.en_embedding.weight  # Sử dụng embedding mặc định
+        if r_emb is None:
+            r_emb = self.rel_embedding.weight[:self.num_rels*2]  # Sử dụng 
+
         # 构造loss
         loss_ent = torch.zeros(1).to(device)
         loss_rel = torch.zeros(1).to(device)
         scores_ob = self.decoder_ob.forward(pre_emb, r_emb, all_triples, mode).view(-1, self.num_nodes)
-        loss_ent += self.loss_e(scores_ob, all_triples[:, 2])
+        loss_ent += self.loss_e(scores_ob, all_triples[:, 2].long())
 
         if self.relation_prediction:
             score_rel = self.rdecoder.forward(pre_emb, r_emb, all_triples, mode).view(-1, self.num_rels *2)
