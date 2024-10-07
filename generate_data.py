@@ -172,7 +172,8 @@ if __name__ == '__main__':
     parser.add_argument('--data', default='Sample')
     args = parser.parse_args()
     print(args)
-    num_nodes, num_rels, train_list, valid_list, test_list = load_data_list(args.data, args.space)
+    # num_nodes, num_rels, train_list, valid_list, test_list = load_data_list(args.data, args.space)
+    num_nodes, num_rels, train_list, valid_list, test_list = load_data_list(args.data)
     total_data = train_list + valid_list + test_list
     time_num = [len(np.unique(da[:, [0, 2]])) for da in total_data]
     total_times = range(len(total_data))

@@ -38,16 +38,28 @@ if __name__ == '__main__':
     test_set = myFloder(test_list, max_batch=args.max_batch, start_id=test_sid, no_batch=True, mode='test')
     co = Collate(num_nodes, num_rels, s_f, s_t, len(total_data), args.data, args.encoder, args.decoder,
                  max_length=args.max_length, all=False, graph=graph, k=args.k_hop)
-    train_dataset = DataLoader(dataset=train_set, batch_size=1, collate_fn= co.collate_rel, shuffle=True, pin_memory=True,
-                               num_workers=6)
-    val_dataset = DataLoader(dataset=val_set, batch_size=1, collate_fn=co.collate_rel, shuffle=False, pin_memory=True,
-                             num_workers=4)
-    test_dataset = DataLoader(dataset=test_set, batch_size=1, collate_fn=co.collate_rel, shuffle=False, pin_memory=True,
-                              num_workers=2)
+    # train_dataset = DataLoader(dataset=train_set, batch_size=1, collate_fn= co.collate_rel, shuffle=True, pin_memory=True,
+    #                            num_workers=6)
+    # val_dataset = DataLoader(dataset=val_set, batch_size=1, collate_fn=co.collate_rel, shuffle=False, pin_memory=True,
+    #                          num_workers=4)
+    # test_dataset = DataLoader(dataset=test_set, batch_size=1, collate_fn=co.collate_rel, shuffle=False, pin_memory=True,
+    #                           num_workers=2)
 
-    train_path = 'data/' + '_' + args['dataset'] + '/train/'
-    valid_path = 'data/' + '_' + args['dataset'] + '/val/'
-    test_path = 'data/' + '_' + args['dataset'] + '/test/'
+    train_dataset = DataLoader(dataset=train_set, batch_size=1, collate_fn= co.collate_rel, shuffle=True, pin_memory=True,
+                               num_workers=1)
+    val_dataset = DataLoader(dataset=val_set, batch_size=1, collate_fn=co.collate_rel, shuffle=False, pin_memory=True,
+                             num_workers=1)
+    test_dataset = DataLoader(dataset=test_set, batch_size=1, collate_fn=co.collate_rel, shuffle=False, pin_memory=True,
+                              num_workers=1)
+
+    # train_path = 'data/' + '_' + args['dataset'] + '/train/'
+    # valid_path = 'data/' + '_' + args['dataset'] + '/val/'
+    # test_path = 'data/' + '_' + args['dataset'] + '/test/'
+
+    train_path = 'data/' + '_' + args.data + '/train/'
+    valid_path = 'data/' + '_' + args.data + '/val/'
+    test_path = 'data/' + '_' + args.data + '/test/'
+    
     mkdir(train_path)
     mkdir(valid_path)
     mkdir(test_path)

@@ -464,7 +464,7 @@ def _load_data(dataset_str='aifb', dataset_path=None):
         train_names = []
         for nod, lab in zip(labels_train_df[nodes_header].values,
                             labels_train_df[label_header].values):
-            nod = np.unicode(to_unicode(nod))  # type: unicode
+            nod = np.unicode(to_unicode(nod))  
             if nod in nodes_u_dict:
                 labeled_nodes_idx.append(nodes_u_dict[nod])
                 label_idx = labels_dict[lab]
@@ -523,12 +523,20 @@ def to_unicode(input):
     """
 
 
+# def _read_dictionary(filename):
+#     d = {}
+#     with open(filename, 'r+') as f:
+#         for line in f:
+#             line = line.strip().split('\t')
+#             d[int(line[1])] = line[0]
+#     return d
+
 def _read_dictionary(filename):
     d = {}
-    with open(filename, 'r+') as f:
+    with open(filename, 'r', encoding='utf-8', errors='ignore') as f:
         for line in f:
             line = line.strip().split('\t')
-            d[int(line[1])] = line[0]
+            d[line[0]] = int(line[1])
     return d
 
 
