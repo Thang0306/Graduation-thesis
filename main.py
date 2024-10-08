@@ -125,7 +125,7 @@ if __name__ == '__main__':
                  args['short'], args['long'], args['fuse'], args['r_fuse'], short_con, long_con).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args['lr'], weight_decay=1e-5)
     model.apply(inplace_relu)
-    if args['dataset'] in ['ICEWS05-15', 'ICEWS18', 'GDELT', 'ICEWS14s']:
+    if args['dataset'] in ['ICEWS05-15', 'ICEWS18', 'GDELT', 'ICEWS14']:
         print('load data from folder')
         train_path = 'data/' + '_' + args['dataset'] + '/train/'
         valid_path = 'data/' + '_' + args['dataset'] + '/val/'
