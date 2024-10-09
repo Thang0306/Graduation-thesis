@@ -107,8 +107,9 @@ if __name__ == '__main__':
     all_ans_list_valid, all_ans_list_r_valid, graph, node_id_new, s_t, s_f, s_l, train_sid, valid_sid, test_sid, \
     total_times, time_idx = load_data(args['dataset'])
     #选择环境
-    device = torch.device('cuda:0')
-    os.environ["CUDA_VISIBLE_DEVICES"] = args['gpu']
+    # device = torch.device('cuda:0')
+    # os.environ["CUDA_VISIBLE_DEVICES"] = args['gpu']
+    device = torch.device('cpu')
     # regcn的参数补充
     num_static_rels, num_words, static_triples, static_graph = 0, 0, [], None
     short_con['num_static_rels'] = num_static_rels
@@ -124,7 +125,7 @@ if __name__ == '__main__':
                  args['short'], args['long'], args['fuse'], args['r_fuse'], short_con, long_con).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args['lr'], weight_decay=1e-5)
     model.apply(inplace_relu)
-    if args['dataset'] in ['ICEWS05-15', 'ICEWS18', 'GDELT']:
+    if args['dataset'] in ['ICEWS05-15', 'ICEWS18', 'GDELT', 'ICEWS14']:
         print('load data from folder')
         train_path = 'data/' + '_' + args['dataset'] + '/train/'
         valid_path = 'data/' + '_' + args['dataset'] + '/val/'
@@ -132,18 +133,24 @@ if __name__ == '__main__':
         train_set = myFloder_new(train_path, dgl.load_graphs)
         val_set = myFloder_new(valid_path, dgl.load_graphs)
         test_set = myFloder_new(test_path, dgl.load_graphs)
-        train_dataset = DataLoader(dataset=train_set, batch_size=1, collate_fn=collate_new, shuffle=True, pin_memory=True, num_workers=8)
-        val_dataset = DataLoader(dataset=val_set, batch_size=1, collate_fn=collate_new, shuffle=False, pin_memory=True, num_workers=3)
-        test_dataset = DataLoader(dataset=test_set, batch_size=1, collate_fn=collate_new, shuffle=False, pin_memory=True, num_workers=3)
+        # train_dataset = DataLoader(dataset=train_set, batch_size=1, collate_fn=collate_new, shuffle=True, pin_memory=True, num_workers=8)
+        # val_dataset = DataLoader(dataset=val_set, batch_size=1, collate_fn=collate_new, shuffle=False, pin_memory=True, num_workers=3)
+        # test_dataset = DataLoader(dataset=test_set, batch_size=1, collate_fn=collate_new, shuffle=False, pin_memory=True, num_workers=3)
+        train_dataset = DataLoader(dataset=train_set, batch_size=1, collate_fn=collate_new, shuffle=True, pin_memory=False, num_workers=1)
+        val_dataset = DataLoader(dataset=val_set, batch_size=1, collate_fn=collate_new, shuffle=False, pin_memory=False, num_workers=1)
+        test_dataset = DataLoader(dataset=test_set, batch_size=1, collate_fn=collate_new, shuffle=False, pin_memory=False, num_workers=1)
     else:
         print('load data online')
         train_set = myFloder(train_list, max_batch=100, start_id=train_sid, no_batch=True, mode='train')
         val_set = myFloder(valid_list, max_batch=100, start_id=valid_sid, no_batch=True, mode='test')
         test_set = myFloder(test_list, max_batch=100, start_id=test_sid, no_batch=True, mode='test')
         co = Collate(num_nodes, num_rels, s_f, s_t, len(total_data), args['dataset'], long_con['encoder'], long_con['decoder'], max_length=long_con['max_length'], all=False, graph=graph, k=2)
-        train_dataset = DataLoader(dataset=train_set, batch_size=1, collate_fn=co.collate_rel, shuffle=True, pin_memory=True, num_workers=8)
-        val_dataset = DataLoader(dataset=val_set, batch_size=1, collate_fn=co.collate_rel, shuffle=False, pin_memory=True, num_workers=4)
-        test_dataset = DataLoader(dataset=test_set, batch_size=1, collate_fn=co.collate_rel, shuffle=False, pin_memory=True, num_workers=4)
+        # train_dataset = DataLoader(dataset=train_set, batch_size=1, collate_fn=co.collate_rel, shuffle=True, pin_memory=True, num_workers=8)
+        # val_dataset = DataLoader(dataset=val_set, batch_size=1, collate_fn=co.collate_rel, shuffle=False, pin_memory=True, num_workers=4)
+        # test_dataset = DataLoader(dataset=test_set, batch_size=1, collate_fn=co.collate_rel, shuffle=False, pin_memory=True, num_workers=4)
+        train_dataset = DataLoader(dataset=train_set, batch_size=1, collate_fn=collate_new, shuffle=True, pin_memory=False, num_workers=1)
+        val_dataset = DataLoader(dataset=val_set, batch_size=1, collate_fn=collate_new, shuffle=False, pin_memory=False, num_workers=1)
+        test_dataset = DataLoader(dataset=test_set, batch_size=1, collate_fn=collate_new, shuffle=False, pin_memory=False, num_workers=1)
 
     for epoch in range(args['n_epochs']): # heheheeh
         print('Epoch {}'.format(epoch), '_', 'Start training: ', datetime.datetime.now(),

@@ -1,4 +1,4 @@
-ICEWS14s:
+ICEWS14:
   h_dim: 200
   num_hidden_layers: 2
   decoder: 'convtranse'

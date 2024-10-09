@@ -1,4 +1,4 @@
-ICEWS14s:
+ICEWS14:
   h_dim: 200
   out_dim: 200
   encoder: 'regcn'
